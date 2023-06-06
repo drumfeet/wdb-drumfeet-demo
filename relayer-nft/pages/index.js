@@ -8,7 +8,7 @@ const RelayerNft = () => {
   const [db, setDb] = useState(null)
   const [tokenId, setTokenId] = useState()
 
-  const handleBtnClick = async () => {
+  const handleOwnerOfClick = async () => {
     console.log("handleBtnClick")
 
     try {
@@ -44,6 +44,42 @@ const RelayerNft = () => {
     }
   }
 
+  const handleBalanceOfClick = async () => {
+    console.log("handleBtnClick")
+
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum, "any")
+      await provider.send("eth_requestAccounts", [])
+      const _signer = await provider.getSigner()
+      const _signerAddress = await _signer.getAddress()
+
+      const params = await db.sign(
+        "upsert",
+        { tokenID: _signerAddress, text: "sampletext4" },
+        "nft",
+        tokenId,
+        {
+          wallet: _signerAddress,
+          jobID: "nft",
+        }
+      )
+      console.log("params", params)
+
+      const response = await fetch("/api/balanceOf", {
+        method: "POST",
+        body: JSON.stringify(params),
+      })
+      const responseJson = await response.json()
+      console.log("responseJson", responseJson)
+
+      if (responseJson.error) {
+        throw new Error(responseJson.error)
+      }
+    } catch (e) {
+      console.error("handleBtnClick", e)
+    }
+  }
+
   useEffect(() => {
     ;(async () => {
       try {
@@ -65,7 +101,8 @@ const RelayerNft = () => {
         type="number"
         onChange={(e) => setTokenId(e.target.value)}
       />
-      <button onClick={handleBtnClick}>Submit</button>
+      <button onClick={handleOwnerOfClick}>ownerOf</button>
+      <button onClick={handleBalanceOfClick}>balanceOf</button>
       <br />
       <br />
       <a href={sonarLink} target="_blank" rel="noopener noreferrer">
