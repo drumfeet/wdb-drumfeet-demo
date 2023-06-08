@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import SDK from "weavedb-sdk"
 import { ethers } from "ethers"
+import { nanoid } from "nanoid"
 
 const RelayerNft = () => {
   const contractTxId = process.env.NEXT_PUBLIC_WEAVEDB_CONTRACT_TX_ID
@@ -9,7 +10,7 @@ const RelayerNft = () => {
   const [tokenId, setTokenId] = useState()
 
   const handleOwnerOfClick = async () => {
-    console.log("handleBtnClick")
+    console.log("handleOwnerOfClick")
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum, "any")
@@ -40,12 +41,13 @@ const RelayerNft = () => {
         throw new Error(responseJson.error)
       }
     } catch (e) {
-      console.error("handleBtnClick", e)
+      console.error("handleOwnerOfClick", e)
     }
   }
 
   const handleBalanceOfClick = async () => {
-    console.log("handleBtnClick")
+    console.log("handleBalanceOfClick")
+    const docId = nanoid()
 
     try {
       const provider = new ethers.BrowserProvider(window.ethereum, "any")
@@ -55,12 +57,12 @@ const RelayerNft = () => {
 
       const params = await db.sign(
         "upsert",
-        { tokenID: _signerAddress, text: "sampletext4" },
-        "nft",
-        tokenId,
+        { user_address: _signerAddress, date: db.ts() },
+        "rsvp_gated",
+        docId,
         {
           wallet: _signerAddress,
-          jobID: "nft",
+          jobID: "nft_balance",
         }
       )
       console.log("params", params)
@@ -76,7 +78,7 @@ const RelayerNft = () => {
         throw new Error(responseJson.error)
       }
     } catch (e) {
-      console.error("handleBtnClick", e)
+      console.error("handleBalanceOfClick", e)
     }
   }
 
@@ -102,9 +104,9 @@ const RelayerNft = () => {
         onChange={(e) => setTokenId(e.target.value)}
       />
       <button onClick={handleOwnerOfClick}>ownerOf</button>
+      <br /> <br /> <br />
       <button onClick={handleBalanceOfClick}>balanceOf</button>
-      <br />
-      <br />
+      <br /> <br />
       <a href={sonarLink} target="_blank" rel="noopener noreferrer">
         Contract Transactions
       </a>

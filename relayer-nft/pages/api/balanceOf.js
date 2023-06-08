@@ -6,27 +6,34 @@ const nftContractAddr = process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS
 import abi from "@/lib/NFT.json"
 
 export default async (req, res) => {
-  const params = JSON.parse(req.body)
-  const tokenID = params.query[0].tokenID
-  let owner = "0x"
-
   try {
-    const address = ethers.getAddress(tokenID)
-    owner = await new Contract(nftContractAddr, abi, provider).balanceOf(
-      address
-    )
+    const params = JSON.parse(req.body)
+    const signerAddress = params.query[0].user_address
+
+    const address = ethers.getAddress(signerAddress)
+    const nftBalance = await new Contract(
+      nftContractAddr,
+      abi,
+      provider
+    ).balanceOf(address)
 
     const sdk = new SDK_NODE({
       contractTxId: contractTxId,
     })
     await sdk.initializeWithoutWallet()
 
-    const tx = await sdk.relay(params.jobID, params, owner, {
+    const _nftBalance = Number(nftBalance)
+    const tx = await sdk.relay(params.jobID, params, _nftBalance, {
       jobID: params.jobID,
       privateKey: process.env.RELAYER_PRIVATEKEY,
     })
 
-    res.status(200).json({ success: true, tx: tx })
+    if (tx.error) {
+      res
+        .status(200)
+        .json({ success: false, error: tx.error, nftBalance: _nftBalance })
+    }
+    res.status(200).json({ success: true, tx: tx, nftBalance: _nftBalance })
   } catch (e) {
     res.status(200).json({ success: false, error: e })
   }
