@@ -66,10 +66,12 @@ const RelayerNft = () => {
         }
       )
       console.log("params", params)
-
+      
+      const nftContractAddr = process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS
+      const chainId = 80001
       const response = await fetch("/api/balanceOf", {
         method: "POST",
-        body: JSON.stringify(params),
+        body: JSON.stringify({ params, nftContractAddr, chainId }),
       })
       const responseJson = await response.json()
       console.log("responseJson", responseJson)
