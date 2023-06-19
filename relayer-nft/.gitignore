@@ -50,3 +50,4 @@ cache/warp/contracts/MANIFEST-000009
 *.old
 *.mdb
 *.log
+wallet-mainnet.json
