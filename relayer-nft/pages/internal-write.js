@@ -1,16 +1,12 @@
 const { useEffect, useState } = require("react")
 import SDK from "weavedb-sdk"
+import { WarpFactory } from "warp-contracts"
 
 const InternalWrite = () => {
   const [db, setDb] = useState(null)
 
   const contractTxId = "e3RyM9TN4_8nJC_lPofpA3aWi6Zh_7rthom-aiWwBJw"
   const relayerContractTxId = "NRA2h_O2UjFhJ5nd4tnGrYRbo8GDvAsSlsFoSgaJjxI"
-  const jobID = "add-height"
-  const job = {
-    relayers: [relayerContractTxId],
-    internalWrites: true,
-  }
 
   const setupWeaveDb = async () => {
     try {
@@ -23,16 +19,38 @@ const InternalWrite = () => {
       console.error("setupWeaveDb", e)
     }
   }
-  const addRelayerJobAr = async () => {
+
+  const relayClick = async () => {
     try {
-      //   const result = await db.addRelayerJob(jobID, job, { ar: adminWallet })
-      //   console.log("result", result)
+      const any_arweave_wallet = "tZcRHsAJPpwCzDoQrxgDxJ27o5ER228AWsY2uxF0X3w"
+      const warp = WarpFactory.forMainnet()
+      const contract = warp
+        .contract(relayerContractTxId)
+        .connect(any_arweave_wallet)
+        .setEvaluationOptions({ internalWrites: true, allowBigInt: true })
+
+      const data = { name: "Bob", age: 20 }
+      const params = await db.sign("set", data, "ppl", "Bob3", {
+        jobID: "add-height",
+      })
+
+      // const result = await contract.bundleInteraction({
+      //   function: "relay",
+      //   to: contractTxId,
+      //   params,
+      // })
+
+      const result = await contract.writeInteraction({
+        function: "relay",
+        to: contractTxId,
+        params,
+      })
+
+      console.log("result", result)
     } catch (e) {
-      console.error("addRelayerJobAr", e)
+      console.error("relayClick", e)
     }
   }
-
-  const relayClick = async () => {}
 
   useEffect(() => {
     setupWeaveDb()
@@ -40,9 +58,6 @@ const InternalWrite = () => {
 
   return (
     <>
-      <button title="Arweave Wallet Only" onClick={addRelayerJobAr}>
-        Add Relayer Job (AR)
-      </button>
       <br />
       <br />
       <button onClick={relayClick}>Relay</button>
