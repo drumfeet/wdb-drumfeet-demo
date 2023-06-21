@@ -2,6 +2,6 @@
   "type": "module",
   "dependencies": {
     "ethers": "^6.6.0",
-    "weavedb-sdk-node": "^0.27.20"
+    "weavedb-sdk-node": "^0.27.21"
   }
 }
