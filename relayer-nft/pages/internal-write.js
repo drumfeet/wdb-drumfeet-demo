@@ -30,7 +30,7 @@ const InternalWrite = () => {
         .setEvaluationOptions({ internalWrites: true, allowBigInt: true })
 
       const data = { name: "Bob", age: 20 }
-      const params = await db.sign("set", data, "ppl", "Bob3", {
+      const params = await db.sign("set", data, "ppl", "Bob6", {
         jobID: "add-height",
       })
 
@@ -52,6 +52,11 @@ const InternalWrite = () => {
     }
   }
 
+  const getCollectionClick = async () => {
+    const result = await db.cget("ppl")
+    console.log("result", result)
+  }
+
   useEffect(() => {
     setupWeaveDb()
   }, [])
@@ -61,6 +66,9 @@ const InternalWrite = () => {
       <br />
       <br />
       <button onClick={relayClick}>Relay</button>
+      <br />
+      <br />
+      <button onClick={getCollectionClick}>Get Collection</button>
     </>
   )
 }
