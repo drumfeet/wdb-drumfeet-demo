@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "arweave": "^1.14.0",
+    "dotenv": "^16.3.1",
     "ethers": "5.7.2",
     "warp-contracts": "^1.4.14",
     "warp-contracts-plugin-deploy": "^1.0.9",
