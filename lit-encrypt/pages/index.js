@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react"
 import SDK from "weavedb-sdk"
 import LitJsSdk from "@lit-protocol/sdk-browser"
+import { isNil } from "ramda"
+import { ethers } from "ethers"
+import lf from "localforage"
 
 export default function Home() {
   const contractTxId = "Sdnmc2t_yTukH34oFmVxj-i0cDw80Tmi7rz5nyPnJn4"
@@ -10,25 +13,76 @@ export default function Home() {
   const [db, setDb] = useState(null)
   // State variable storing a boolean value indicating whether database initialization is complete.
   const [initDb, setInitDb] = useState(false)
+  const [user, setUser] = useState(null)
 
   const [msg, setMsg] = useState("")
   const [docId, setDocId] = useState("")
   const [decryptedMsg, setDecryptedMsg] = useState()
+  // State variable storing an array of people data
+  const [messages, setMessages] = useState([])
 
-  // more examples at: https://developer.litprotocol.com/accessControl/EVM/basicExamples#a-specific-wallet-address
-  const accessControlConditions = [
-    {
-      contractAddress: "0x0000000000000000000000000000000000001010",
-      standardContractType: "ERC20",
-      chain: "polygon",
-      method: "balanceOf",
-      parameters: [":userAddress"],
-      returnValueTest: {
-        comparator: ">=",
-        value: "0",
-      },
-    },
-  ]
+  const checkUser = async () => {
+    const wallet_address = await lf.getItem(`temp_address:current`)
+    if (!isNil(wallet_address)) {
+      const identity = await lf.getItem(
+        `temp_address:${contractTxId}:${wallet_address}`
+      )
+      if (!isNil(identity)) {
+        setUser({
+          wallet: wallet_address,
+          privateKey: identity.privateKey,
+        })
+      }
+    }
+  }
+
+  const login = async () => {
+    const provider = new ethers.BrowserProvider(window.ethereum, "any")
+    const signer = await provider.getSigner()
+    await provider.send("eth_requestAccounts", [])
+    const wallet_address = await signer.getAddress()
+    let identity = await lf.getItem(
+      `temp_address:${contractTxId}:${wallet_address}`
+    )
+
+    let tx
+    let err
+    if (isNil(identity)) {
+      ;({ tx, identity, err } = await db.createTempAddress(wallet_address))
+      const linked = await db.getAddressLink(identity.address)
+      if (isNil(linked)) {
+        alert("something went wrong")
+        return
+      }
+    } else {
+      await lf.setItem("temp_address:current", wallet_address)
+
+      setUser({
+        wallet: wallet_address,
+        privateKey: identity.privateKey,
+      })
+      return
+    }
+    if (!isNil(tx) && isNil(tx.err)) {
+      identity.tx = tx
+      identity.linked_address = wallet_address
+      await lf.setItem("temp_address:current", wallet_address)
+      await lf.setItem(
+        `temp_address:${contractTxId}:${wallet_address}`,
+        JSON.parse(JSON.stringify(identity))
+      )
+      setUser({
+        wallet: wallet_address,
+        privateKey: identity.privateKey,
+      })
+    }
+  }
+
+  const logout = async () => {
+    await lf.removeItem("temp_address:current")
+    setUser(null, "temp_current")
+    console.log("<<logout()")
+  }
 
   const setupWeaveDB = async () => {
     try {
@@ -55,6 +109,21 @@ export default function Home() {
       const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
         msg
       )
+
+      // more examples at: https://developer.litprotocol.com/accessControl/EVM/basicExamples#a-specific-wallet-address
+      const accessControlConditions = [
+        {
+          contractAddress: "",
+          standardContractType: "",
+          chain: "polygon",
+          method: "",
+          parameters: [":userAddress"],
+          returnValueTest: {
+            comparator: "=",
+            value: user.wallet,
+          },
+        },
+      ]
 
       const encryptedSymmetricKey = await lit.saveEncryptionKey({
         accessControlConditions,
@@ -87,9 +156,13 @@ export default function Home() {
           ),
           accessControlConditions: accessControlConditions,
         },
-        COLLECTION_NAME
+        COLLECTION_NAME,
+        user
       )
       console.log("tx", tx)
+
+      console.log("result", await tx.getResult())
+      getMessages()
     } catch (e) {
       console.error("addMsg", e)
     }
@@ -144,12 +217,24 @@ export default function Home() {
     }
   }
 
+  const getMessages = async () => {
+    try {
+      const _messages = await db.cget(COLLECTION_NAME)
+      console.log("getMessages", _messages)
+      setMessages(_messages)
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   useEffect(() => {
+    checkUser()
     setupWeaveDB()
   }, [])
 
   useEffect(() => {
     if (initDb) {
+      getMessages()
     }
   }, [initDb])
 
@@ -164,6 +249,14 @@ export default function Home() {
       >
         <br />
         <br />
+        {!isNil(user) ? (
+          <button onClick={logout}>
+            {user.wallet.slice(0, 5)}...{user.wallet.slice(-5)}
+          </button>
+        ) : (
+          <button onClick={login}>Login</button>
+        )}
+        <br /> <br />
         <br /> <br />
         <label title="message you want to encrypt">Message</label>
         <input
@@ -188,9 +281,27 @@ export default function Home() {
         <button onClick={decryptMsg}>Decrypt Message</button>
         <br />
         <br />
-        {decryptedMsg ? decryptedMsg : ""}
+        {decryptedMsg ? "decryptedMsg is : " + decryptedMsg : ""}
         <br />
         <br />
+        <br />
+        <br />
+        <table cellPadding="18px" cellSpacing={"28px"}>
+          <thead>
+            <tr align="left">
+              <th>Doc ID</th>
+              <th>User Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {messages.map((item, index) => (
+              <tr key={index}>
+                <td>{item.id}</td>
+                <td>{item.data.user_address}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   )
