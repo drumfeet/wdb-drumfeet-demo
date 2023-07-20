@@ -1,20 +1,33 @@
 import { useEffect, useState } from "react"
 import SDK from "weavedb-sdk"
+import LitJsSdk from "@lit-protocol/sdk-browser"
 
 export default function Home() {
-  //Replace contractTxId string value with the contractTxId when deploying the WeaveDB contract.
-  const contractTxId = "W00EhrAHqD2CxLd81N8yyCOOK0xtPTtfKIQEZGzKabU"
-  // Replace COLLECTION_NAME string value with the name of your collection. For this example, we have set people as our collection name.
+  const contractTxId = "Sdnmc2t_yTukH34oFmVxj-i0cDw80Tmi7rz5nyPnJn4"
   const COLLECTION_NAME = "messages"
+
   // State variable storing the weavedb-sdk object
   const [db, setDb] = useState(null)
   // State variable storing a boolean value indicating whether database initialization is complete.
   const [initDb, setInitDb] = useState(false)
-  const [lit, setLit] = useState(null)
-  const [messages, setMessages] = useState([])
-  const [msg, setMsg] = useState()
-  // State variable storing the doc id of the message to be decrypted
-  const [docId, setDocId] = useState()
+
+  const [msg, setMsg] = useState("")
+  const [docId, setDocId] = useState("")
+
+  // more examples at: https://developer.litprotocol.com/accessControl/EVM/basicExamples#a-specific-wallet-address
+  const accessControlConditions = [
+    {
+      contractAddress: "0x0000000000000000000000000000000000001010",
+      standardContractType: "ERC20",
+      chain: "polygon",
+      method: "balanceOf",
+      parameters: [":userAddress"],
+      returnValueTest: {
+        comparator: ">=",
+        value: "0",
+      },
+    },
+  ]
 
   const setupWeaveDB = async () => {
     try {
@@ -31,8 +44,45 @@ export default function Home() {
 
   const addMsg = async () => {
     try {
+      const lit = new LitJsSdk.LitNodeClient()
+      await lit.connect()
+
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({
+        chain: "polygon",
+      })
+
+      const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
+        "test msg"
+      )
+
+      const encryptedSymmetricKey = await lit.saveEncryptionKey({
+        accessControlConditions,
+        authSig,
+        chain: "polygon",
+        symmetricKey,
+      })
+      const blobToDataURI = (blob) => {
+        return new Promise((resolve, reject) => {
+          var reader = new FileReader()
+
+          reader.onload = (e) => {
+            var data = e.target.result
+            resolve(data)
+          }
+          reader.readAsDataURL(blob)
+        })
+      }
+      const encryptedData = await blobToDataURI(encryptedString)
+
+      // store encryption info in weavedb
       const tx = await db.add(
-        { date: db.ts(), user_address: db.signer(), message: msg },
+        {
+          date: db.ts(),
+          user_address: db.signer(),
+          encryptedData: encryptedData,
+          encryptedSymmetricKey: encryptedSymmetricKey,
+          accessControlConditions: accessControlConditions,
+        },
         COLLECTION_NAME
       )
       console.log("tx", tx)
@@ -42,10 +92,50 @@ export default function Home() {
   }
 
   const decryptMsg = async () => {
+    // retrieve specific document from your collection, then lit protocol will validate your encryption key and accessControlConditions to decrypt the data requested
+
     try {
-      console.log("docId", docId)
+      const document = await db.get(COLLECTION_NAME, docId)
+      console.log("document", document)
+
+      const lit = new LitJsSdk.LitNodeClient()
+      await lit.connect()
+
+      const { encryptedData, encryptedSymmetricKey, accessControlConditions } =
+        document
+
+      const authSig = await LitJsSdk.checkAndSignAuthMessage({
+        chain: "polygon",
+      })
+
+      const symmetricKey = await lit.getEncryptionKey({
+        accessControlConditions,
+        toDecrypt: encryptedSymmetricKey,
+        chain: "polygon",
+        authSig,
+      })
+
+      const dataURItoBlob = (dataURI) => {
+        var byteString = window.atob(dataURI.split(",")[1])
+        var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0]
+        var ab = new ArrayBuffer(byteString.length)
+        var ia = new Uint8Array(ab)
+        for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i)
+        }
+
+        var blob = new Blob([ab], { type: mimeString })
+
+        return blob
+      }
+
+      const decryptedString = await LitJsSdk.decryptString(
+        dataURItoBlob(encryptedData),
+        symmetricKey
+      )
+      console.log("decryptedString", decryptedString)
     } catch (e) {
-      console.error("addMsg", e)
+      console.error("decryptMsg", e)
     }
   }
 
@@ -70,7 +160,7 @@ export default function Home() {
         <br />
         <br />
         <br /> <br />
-        <label>Message</label>
+        <label title="message you want to encrypt">Message</label>
         <input
           placeholder="Message"
           value={msg}
@@ -81,7 +171,9 @@ export default function Home() {
         <br />
         <br />
         <br /> <br />
-        <label>Doc ID</label>
+        <label title="id of the document you want to get from the collection">
+          Doc ID
+        </label>
         <input
           placeholder="Doc ID"
           value={docId}
