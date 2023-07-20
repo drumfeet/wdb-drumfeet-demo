@@ -13,6 +13,7 @@ export default function Home() {
 
   const [msg, setMsg] = useState("")
   const [docId, setDocId] = useState("")
+  const [decryptedMsg, setDecryptedMsg] = useState()
 
   // more examples at: https://developer.litprotocol.com/accessControl/EVM/basicExamples#a-specific-wallet-address
   const accessControlConditions = [
@@ -52,7 +53,7 @@ export default function Home() {
       })
 
       const { encryptedString, symmetricKey } = await LitJsSdk.encryptString(
-        "test msg"
+        msg
       )
 
       const encryptedSymmetricKey = await lit.saveEncryptionKey({
@@ -80,7 +81,10 @@ export default function Home() {
           date: db.ts(),
           user_address: db.signer(),
           encryptedData: encryptedData,
-          encryptedSymmetricKey: encryptedSymmetricKey,
+          encryptedSymmetricKey: LitJsSdk.uint8arrayToString(
+            encryptedSymmetricKey,
+            "base16"
+          ),
           accessControlConditions: accessControlConditions,
         },
         COLLECTION_NAME
@@ -134,6 +138,7 @@ export default function Home() {
         symmetricKey
       )
       console.log("decryptedString", decryptedString)
+      setDecryptedMsg(decryptedString)
     } catch (e) {
       console.error("decryptMsg", e)
     }
@@ -181,6 +186,9 @@ export default function Home() {
         />
         <br />
         <button onClick={decryptMsg}>Decrypt Message</button>
+        <br />
+        <br />
+        {decryptedMsg ? decryptedMsg : ""}
         <br />
         <br />
       </div>
