@@ -20,6 +20,10 @@ export default function Home() {
 
         <br />
         <br />
+        <Link href="/gordon">gordon</Link>
+
+        <br />
+        <br />
         <Link href="/prate11rr">prate11rr</Link>
 
         <br />
