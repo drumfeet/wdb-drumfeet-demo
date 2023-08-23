@@ -1,10 +1,11 @@
 {
   "dependencies": {
-    "arweave": "^1.14.0",
     "dotenv": "^16.3.1",
+    "weavedb-sdk-node": "^0.28.16",
+
+    "arweave": "^1.14.0",
     "ethers": "5.7.2",
     "warp-contracts": "^1.4.14",
-    "warp-contracts-plugin-deploy": "^1.0.9",
-    "weavedb-sdk-node": "^0.28.16"
+    "warp-contracts-plugin-deploy": "^1.0.9"
   }
 }
