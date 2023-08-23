@@ -2,8 +2,8 @@ import { useEffect, useState } from "react"
 import SDK from "weavedb-sdk"
 
 export default function Home() {
-  const contractTxId = "86LpJmMQTyBC4KjQTwkMoclCDOsLTlzQsNQIGifYFY4"
-  const COLLECTION_NAME = "test"
+  const contractTxId = "35TPtBaJtVfOpcWaii8ZRSf4HbSB2lxkkoMBhrgTDzI"
+  const COLLECTION_NAME = "coas_nftcanvases"
   const [db, setDb] = useState(null)
   const [initDb, setInitDb] = useState(false)
   const [collectionAddress, setCollectionAddress] = useState("")
