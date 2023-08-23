@@ -4393,10 +4393,38 @@ weavedb-base@^0.28.5:
     pako "^2.1.0"
     ramda "^0.28.0"
 
+weavedb-base@^0.28.6:
+  version "0.28.6"
+  resolved "https://registry.yarnpkg.com/weavedb-base/-/weavedb-base-0.28.6.tgz#12af89fbcad08e3b7f5186d004ab607a2a2c48b3"
+  integrity sha512-Ur4SL2Z0azmhz/iKp4OSGs+dnEYHDoJxkv7OAcsEHRBRjEkhcIjNSQpmXe7whxzBP5QnM6qtj5QBpDhGljYHVQ==
+  dependencies:
+    "@metamask/eth-sig-util" "^4.0.1"
+    "@metamask/legacy-web3" "^2.0.0"
+    "@simplewebauthn/server" "^7.2.0"
+    eth-crypto "^2.3.0"
+    ethereumjs-util "^7.1.5"
+    ethers "5.7.2"
+    md5 "^2.3.0"
+    pako "^2.1.0"
+    ramda "^0.28.0"
+
 weavedb-contracts@^0.28.21:
   version "0.28.22"
   resolved "https://registry.yarnpkg.com/weavedb-contracts/-/weavedb-contracts-0.28.22.tgz#386140d40db4fc46b526146deb72f602405b85b1"
   integrity sha512-kFHmeP2YXZZzuA5uB36t2JuZ67qm9KL1IY+IHDVzskACPqtCEMQtc/TaWEXM5jpWTu/ElB46DE9ZZO4CQs9ziw==
+  dependencies:
+    "@noble/curves" "^0.9.0"
+    "@peculiar/webcrypto" "^1.4.3"
+    fpjson-lang "^0.1.4"
+    json-logic-js "^2.0.2"
+    ramda "^0.28.0"
+    wasmbuilder "^0.0.16"
+    wasmcurves "^0.2.1"
+
+weavedb-contracts@^0.28.24:
+  version "0.28.24"
+  resolved "https://registry.yarnpkg.com/weavedb-contracts/-/weavedb-contracts-0.28.24.tgz#271f63aff55857c364e0ea84249e432067f626a8"
+  integrity sha512-KjAdfUg9J0AFPSz3lar5EHZ0K+G1P0qHA3GOlc7GJ9+y0XwLeJqdvLlu+pIXGfFNaPxMx7wA5XEjtQsQXEgqPg==
   dependencies:
     "@noble/curves" "^0.9.0"
     "@peculiar/webcrypto" "^1.4.3"
@@ -4435,6 +4463,24 @@ weavedb-sdk@^0.28.17:
     warp-contracts-old "npm:warp-contracts@1.2.26"
     weavedb-base "^0.28.5"
     weavedb-contracts "^0.28.21"
+
+weavedb-sdk@^0.28.18:
+  version "0.28.18"
+  resolved "https://registry.yarnpkg.com/weavedb-sdk/-/weavedb-sdk-0.28.18.tgz#8237943a07556ea9d489cda4c83ac67909ab7d5f"
+  integrity sha512-RJcUrmNmrl/wb1F/FI8eOdLIp4aoe5jYkaRyLPsnsaQB61j9qnsd6IrFeTa9fCM5kj1lEaGkshxX97w3PXa1QA==
+  dependencies:
+    "@lit-protocol/sdk-browser" "^1.3.3"
+    "@metamask/legacy-web3" "^2.0.0"
+    "@paralleldrive/cuid2" "^2.2.0"
+    arweave "1.13.1"
+    buffer "^6.0.3"
+    compare-versions "^6.0.0-rc.1"
+    md5 "^2.3.0"
+    ramda "^0.28.0"
+    warp-contracts "^1.4.14"
+    warp-contracts-old "npm:warp-contracts@1.2.26"
+    weavedb-base "^0.28.6"
+    weavedb-contracts "^0.28.24"
 
 web-streams-polyfill@^3.0.3:
   version "3.2.1"
