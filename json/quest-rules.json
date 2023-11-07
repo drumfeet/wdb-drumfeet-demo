@@ -1,0 +1,9 @@
+{
+  "let create,update": {
+    "resource.newData.wallet": { "var": "request.auth.signer" }
+  },
+  "allow create,update": true,
+  "allow delete": {
+    "==": [{ "var": "request.auth.signer" }, { "var": "resource.setter" }]
+  }
+}

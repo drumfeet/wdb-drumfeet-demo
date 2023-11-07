@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "required": [],
+  "properties": {
+    "discord": { "type": "string" },
+    "wallet": { "type": "string" }
+  }
+}
