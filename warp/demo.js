@@ -2,7 +2,7 @@ const { WarpFactory } = require("warp-contracts")
 const fs = require("fs")
 
 async function main() {
-  const privateKeyFile = "wallet-mainnet.json"
+  const privateKeyFile = ".wallets/wallet-mainnet.json"
   const adminWallet = JSON.parse(fs.readFileSync(privateKeyFile).toString())
 
   const warp = WarpFactory.forMainnet()
