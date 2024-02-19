@@ -1,5 +1,6 @@
 {
     "dependencies": {
-        "warp-contracts": "^1.4.34"
+        "warp-contracts": "^1.4.34",
+        "warp-contracts-plugin-deploy": "^1.0.13"
     }
 }
