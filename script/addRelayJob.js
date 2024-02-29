@@ -3,7 +3,7 @@ import fs from "fs"
 
 const contractTxId = "e3RyM9TN4_8nJC_lPofpA3aWi6Zh_7rthom-aiWwBJw"
 
-const privateKeyFile = "wallet-mainnet.json"
+const privateKeyFile = ".wallets/wallet-mainnet.json"
 const adminWallet = JSON.parse(fs.readFileSync(privateKeyFile).toString())
 
 const sdk = new SDK_NODE({

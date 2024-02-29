@@ -4,7 +4,7 @@ const fs = require("fs")
 const COLLECTION_NAME = "sample"
 const contractTxId = "h7V-UiqNCJbbXo8CEirs7wd0cZ1HgePy3HksSQ_8NKU"
 
-const privateKeyFile = "wallet-mainnet.json"
+const privateKeyFile = ".wallets/wallet-mainnet.json"
 const adminWallet = JSON.parse(fs.readFileSync(privateKeyFile).toString())
 
 const main = async () => {
