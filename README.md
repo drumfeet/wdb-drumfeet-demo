@@ -1,1 +1,1 @@
-# sample-apps
+# WeaveDB Demo
