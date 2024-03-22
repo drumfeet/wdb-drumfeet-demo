@@ -1,0 +1,57 @@
+{
+  "let create, update": {
+    "resource.newData.updatedAt": {
+      "var": "request.block.timestamp"
+    },
+    "resource.newData.createdAt": {
+      "var": "request.block.timestamp"
+    },
+    "resource.newData.owner": {
+      "var": "request.auth.signer"
+    }
+  },
+  "allow create": {
+    "and": [
+      {
+        "==": [
+          { "var": "request.auth.signer" },
+          { "var": "resource.newData.owner" }
+        ]
+      },
+      {
+        "==": [
+          { "var": "request.block.timestamp" },
+          { "var": "resource.newData.createdAt" }
+        ]
+      },
+      {
+        "==": [
+          { "var": "request.block.timestamp" },
+          { "var": "resource.newData.updatedAt" }
+        ]
+      }
+    ]
+  },
+  "allow update": {
+    "and": [
+      {
+        "==": [{ "var": "request.auth.signer" }, { "var": "resource.setter" }]
+      },
+      {
+        "==": [
+          { "var": "resource.data.username" },
+          { "var": "resource.newData.username" }
+        ]
+      },
+      {
+        "==": [
+          { "var": "request.block.timestamp" },
+          { "var": "resource.newData.updatedAt" }
+        ]
+      }
+    ]
+  },
+  "allow delete": {
+    "==": [{ "var": "request.auth.signer" }, { "var": "resource.setter" }]
+  }
+}
