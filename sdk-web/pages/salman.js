@@ -68,11 +68,16 @@ export default function Home() {
     },
   }
   const rules = {
-    "let create, update": {
-      "resource.newData.updatedAt": {
+    "let create": {
+      "resource.newData.createdAt": {
         var: "request.block.timestamp",
       },
-      "resource.newData.createdAt": {
+      "resource.newData.owner": {
+        var: "request.auth.signer",
+      },
+    },
+    "let update": {
+      "resource.newData.updatedAt": {
         var: "request.block.timestamp",
       },
       "resource.newData.owner": {
@@ -91,12 +96,6 @@ export default function Home() {
           "==": [
             { var: "request.block.timestamp" },
             { var: "resource.newData.createdAt" },
-          ],
-        },
-        {
-          "==": [
-            { var: "request.block.timestamp" },
-            { var: "resource.newData.updatedAt" },
           ],
         },
       ],
