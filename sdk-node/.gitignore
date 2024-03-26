@@ -44,3 +44,4 @@ cache/*
 *.log
 wallet-mainnet.json
 anson.js
+.wallets

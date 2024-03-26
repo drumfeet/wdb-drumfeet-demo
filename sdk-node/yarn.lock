@@ -4181,22 +4181,22 @@ weavedb-contracts@^0.39.0:
     wasmbuilder "^0.0.16"
     wasmcurves "^0.2.1"
 
-weavedb-sdk-node@^0.39.1:
-  version "0.39.1"
-  resolved "https://registry.yarnpkg.com/weavedb-sdk-node/-/weavedb-sdk-node-0.39.1.tgz#bbcbf5c592f9535f4764cbdad1dc4e3590a17875"
-  integrity sha512-NAJofyr0IZ5qOZJuzAdWLJBek9PGRGwbuGG0C/08Qr5RHoHMcH8fFAMo48C+zqDjLqWxjhDGC6UBlBLHQfqtCA==
+weavedb-sdk-node@^0.39.2:
+  version "0.39.2"
+  resolved "https://registry.yarnpkg.com/weavedb-sdk-node/-/weavedb-sdk-node-0.39.2.tgz#1527a54b6219775940e371e66529c4cdd2e5a997"
+  integrity sha512-opDMdXsW0WtoUn9YtWd30kDTJ4fQWw6RrcWY9C5jLdIPlhzcCZE7upSVhS06rQ/UoyH7Bp9B0XSTGXiKo/Qo4g==
   dependencies:
     "@aws-amplify/api" "^5.0.14"
     lmdb "^2.8.3"
     redis "^4.6.5"
     warp-contracts "^1.4.14"
     warp-contracts-pubsub "^1.0.5"
-    weavedb-sdk "^0.39.1"
+    weavedb-sdk "^0.39.2"
 
-weavedb-sdk@^0.39.1:
-  version "0.39.1"
-  resolved "https://registry.yarnpkg.com/weavedb-sdk/-/weavedb-sdk-0.39.1.tgz#78ae32a11fa502c95e6775810732971105acff55"
-  integrity sha512-xF7T/G8P7+39TyAjEhI+gbmcAqksa0/vJypNM4JMyd+cwZr/3ageyP0sS0dlDYenxZSJ5oMpJBuU/fPUKR9+kg==
+weavedb-sdk@^0.39.2:
+  version "0.39.2"
+  resolved "https://registry.yarnpkg.com/weavedb-sdk/-/weavedb-sdk-0.39.2.tgz#d1fd658e2c0233fc080dc96b53a93e379a85c9de"
+  integrity sha512-J652iqvpSeLsotruMK6TlkF9z5GbQrGzwe8e+ie7GB6EyVXYVbgbqf2+/H/x4+ix59EoOQdSoz+1BbkrqOyEkw==
   dependencies:
     "@lit-protocol/sdk-browser" "^1.3.3"
     "@metamask/legacy-web3" "^2.0.0"
