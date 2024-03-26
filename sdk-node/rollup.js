@@ -31,6 +31,9 @@ async function main() {
     // const tx3 = await db.bundle([query1])
     // console.log("tx3", tx3)
 
+    // const tx4 = await db.setRules({ "allow write": true }, "people")
+    // console.log("tx4", tx4)
+
     const result = await db.cget(COLLECTION_NAME)
     console.log(result)
   } catch (error) {
