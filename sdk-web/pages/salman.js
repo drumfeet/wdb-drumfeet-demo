@@ -1,8 +1,12 @@
+import { identity } from "ramda"
+import { useState } from "react"
 import WeaveDB from "weavedb-sdk"
 
 export default function Home() {
-  const CONTRACT_TX_ID = "0a6zzEve6-44WVTbHzGny8CztpxzYJUI9klIrwJ26vA"
+  const CONTRACT_TX_ID = "vErkhueWmK6mrvrcUd0pFUuX7mYqEBLFrS44tFpoIjI"
   const COLLECTION_NAME = "wave-acl"
+  const [db, setDb] = useState()
+  const [user, setUser] = useState()
 
   const schema = {
     type: "object",
@@ -162,6 +166,33 @@ export default function Home() {
     console.log("res", res)
   }
 
+  const initDb = async () => {
+    const _db = new WeaveDB({ contractTxId: CONTRACT_TX_ID, nocache: true })
+    await _db.init()
+    setDb(_db)
+    console.log(_db)
+  }
+
+  const login = async () => {
+    const expiry = 60 * 60 * 24 * 7
+    const { identity } = await db.createTempAddress()
+    setUser(identity)
+    console.log(identity)
+  }
+
+  const autoSign = async () => {
+    const _db = new WeaveDB({ contractTxId: CONTRACT_TX_ID, nocache: true })
+    await _db.init()
+    // const { identity } = await _db.createTempAddress()
+    // console.log("identity", identity)
+    // console.log(
+    //   "getAddressLink",
+    //   await _db.getAddressLink(identity.address.toLowerCase())
+    // )
+
+    // const tx = await _db.add({ name: "test" }, COLLECTION_NAME, identity)
+  }
+
   return (
     <>
       <button onClick={setMySchema}>setSchema</button>
@@ -170,9 +201,16 @@ export default function Home() {
       <button onClick={setMyRules}>setRules</button>
       <br />
       <br />
+      <button onClick={initDb}>initDb</button>
+      <br />
+      <br />
+      <button onClick={login}>login</button>
+      <br />
+      <br />
       <button onClick={add}>Add</button>
       <br />
       <br />
+      <button onClick={autoSign}>autoSign</button>
     </>
   )
 }
