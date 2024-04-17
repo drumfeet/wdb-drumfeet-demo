@@ -1,8 +1,8 @@
 const WeaveDB = require("weavedb-sdk-node")
 const fs = require("fs")
 
-const COLLECTION_NAME = "sample"
-const contractTxId = "h7V-UiqNCJbbXo8CEirs7wd0cZ1HgePy3HksSQ_8NKU"
+const COLLECTION_NAME = "sample2"
+const contractTxId = "EY1ykbYVJcCBlIXd_pkypJgcc2cOB0ek_wPL10BC3Ds"
 
 const privateKeyFile = ".wallets/wallet-mainnet.json"
 const adminWallet = JSON.parse(fs.readFileSync(privateKeyFile).toString())
@@ -10,6 +10,7 @@ const adminWallet = JSON.parse(fs.readFileSync(privateKeyFile).toString())
 const main = async () => {
   const db = new WeaveDB({
     contractTxId,
+    nocache: true,
   })
 
   await db.init()
