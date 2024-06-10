@@ -1,0 +1,6 @@
+{
+  "let create,update": {
+    "resource.newData.warpTxId": { "var": "request.transaction.id" }
+  },
+  "allow write": true
+}
