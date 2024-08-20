@@ -19,7 +19,7 @@ async function deployFromSourceTx() {
     ids: {},
     indexes: {},
     auth: {
-      algorithms: ["secp256k1", "secp256k1-2", "ed25519", "rsa256"],
+      algorithms: ["rsa256", "secp256k1", "ed25519", "secp256k1-2"],
       name: "weavedb",
       version: "1",
       links: {},
@@ -28,7 +28,10 @@ async function deployFromSourceTx() {
       lastExecuted: 0,
       crons: {},
     },
-    contracts: {},
+    contracts: {
+      dfinity: "3OnjOPuWzB138LOiNxqq2cKby2yANw6RWcQVEkztXX8",
+      ethereum: "Awwzwvw7qfc58cKS8cG3NsPdDet957-Bf-S1RcHry0w",
+    },
     relayers: {},
   }
 
@@ -66,5 +69,5 @@ async function deploy() {
   console.log("contractTxId", contractTxId)
 }
 
-// deployFromSourceTx()
-deploy()
+deployFromSourceTx()
+// deploy()
